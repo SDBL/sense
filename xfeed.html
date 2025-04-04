@@ -16,23 +16,7 @@
 </head>
 <body>
     <div class="feed-container" id="feed">
-        <p>Loading feed...</p>
+        <p>This is a test. If you see this, the page is loading!</p>
     </div>
-
-    <script>
-        async function fetchXFeed() {
-            const rssUrl = 'https://rsshub.app/twitter/user/SenseFutureUK';
-            const feedContainer = document.getElementById('feed');
-            try {
-                const response = await fetch(rssUrl);
-                if (!response.ok) throw new Error('Network response not OK');
-                const text = await response.text();
-                feedContainer.innerHTML = '<p>Feed loaded successfully!</p><pre>' + text.substring(0, 200) + '...</pre>';
-            } catch (error) {
-                feedContainer.innerHTML = '<p>Failed: ' + error.message + '</p>';
-            }
-        }
-        fetchXFeed();
-    </script>
 </body>
 </html>
