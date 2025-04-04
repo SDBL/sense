@@ -35,35 +35,34 @@
 
     <script>
         async function fetchXFeed() {
-            const rssUrl = 'https://rsshub.app/twitter/user/SenseFutureUK';
-            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(rssUrl);
+            const url = 'https://x.com/SenseFutureUK';
+            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
             const feedContainer = document.getElementById('feed');
             try {
                 const response = await fetch(proxyUrl);
                 if (!response.ok) throw new Error('Network response not OK');
-                const text = await response.text();
+                const html = await response.text();
                 const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(text, 'text/xml');
-                const items = xmlDoc.getElementsByTagName('item');
+                const doc = parser.parseFromString(html, 'text/html');
+                const tweets = doc.querySelectorAll('article[data-testid="tweet"]');
                 feedContainer.innerHTML = '';
 
-                if (items.length === 0) {
-                    feedContainer.innerHTML = 'No posts available at this time.';
+                if (tweets.length === 0) {
+                    feedContainer.innerHTML = 'No posts detected.';
                     return;
                 }
 
-                for (let i = 0; i < Math.min(items.length, 10); i++) {
-                    const title = items[i].getElementsByTagName('title')[0].textContent;
-                    const link = items[i].getElementsByTagName('link')[0].textContent;
-                    const description = items[i].getElementsByTagName('description')[0].textContent;
-
+                tweets.forEach((tweet, index) => {
+                    if (index >= 10) return; // Limit to 10 posts
+                    const text = tweet.querySelector('div[lang]')?.textContent || 'No text';
+                    const link = tweet.querySelector('a[href*="/status/"]')?.href || url;
                     const feedItem = document.createElement('div');
                     feedItem.className = 'feed-item';
-                    feedItem.innerHTML = `<a href="${link}" target="_blank">${title}</a><br>${description}`;
+                    feedItem.innerHTML = `<a href="${link}" target="_blank">${text}</a>`;
                     feedContainer.appendChild(feedItem);
-                }
+                });
             } catch (error) {
-                feedContainer.innerHTML = '<p>Failed to load feed: ' + error.message + '</p>';
+                feedContainer.innerHTML = '<p>Failed: ' + error.message + '</p>';
             }
         }
         fetchXFeed();
