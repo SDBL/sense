@@ -48,7 +48,7 @@
                 feedContainer.innerHTML = '';
 
                 if (items.length === 0) {
-                    feedContainer.innerHTML = 'No posts found.';
+                    feedContainer.innerHTML = 'No posts available at this time.';
                     return;
                 }
 
@@ -63,7 +63,7 @@
                     feedContainer.appendChild(feedItem);
                 }
             } catch (error) {
-                feedContainer.innerHTML = '<p>Failed: ' + error.message + '</p>';
+                feedContainer.innerHTML = '<p>Failed to load feed: ' + error.message + '</p>';
             }
         }
         fetchXFeed();
