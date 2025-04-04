@@ -46,7 +46,7 @@
                 const feedContainer = document.getElementById('feed');
                 feedContainer.innerHTML = '';
 
-                for (let i = 0; i < Math.min(items.length, 10); i++) { // Limit to 10 posts
+                for (let i = 0; i < Math.min(items.length, 10); i++) {
                     const title = items[i].getElementsByTagName('title')[0].textContent;
                     const link = items[i].getElementsByTagName('link')[0].textContent;
                     const description = items[i].getElementsByTagName('description')[0].textContent;
