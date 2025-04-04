@@ -35,7 +35,7 @@
 
     <script>
         async function fetchXFeed() {
-            const feedUrl = 'https://nitter.net/SenseFutureUK/rss';
+            const feedUrl = 'https://xcancel.com/SenseFutureUK.rss';
             const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(feedUrl);
             const feedContainer = document.getElementById('feed');
             try {
@@ -48,14 +48,14 @@
                 feedContainer.innerHTML = '';
 
                 if (items.length === 0) {
-                    feedContainer.innerHTML = '<p>No posts detected. Check <a href="https://x.com/SenseFutureUK" target="_blank">@SenseFutureUK</a>.</p>';
+                    feedContainer.innerHTML = '<p>No posts detected. Visit <a href="https://x.com/SenseFutureUK" target="_blank">@SenseFutureUK</a>.</p>';
                     return;
                 }
 
                 for (let i = 0; i < Math.min(items.length, 10); i++) {
                     const title = items[i].getElementsByTagName('title')[0].textContent;
                     const link = items[i].getElementsByTagName('link')[0].textContent;
-                    const description = items[i].getElementsByTagName('description')[0].textContent.replace(/<[^>]+>/g, ''); // Strip HTML
+                    const description = items[i].getElementsByTagName('description')[0].textContent.replace(/<[^>]+>/g, '');
                     const feedItem = document.createElement('div');
                     feedItem.className = 'feed-item';
                     feedItem.innerHTML = `<a href="${link}" target="_blank">${title}</a><br>${description}`;
