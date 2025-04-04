@@ -35,16 +35,20 @@
 
     <script>
         async function fetchXFeed() {
-            const rssUrl = 'https://x.com/SenseFutureUK.rss';
-            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(rssUrl);
+            const rssUrl = 'https://rsshub.app/twitter/user/SenseFutureUK';
             try {
-                const response = await fetch(proxyUrl);
+                const response = await fetch(rssUrl);
                 const text = await response.text();
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(text, 'text/xml');
                 const items = xmlDoc.getElementsByTagName('item');
                 const feedContainer = document.getElementById('feed');
                 feedContainer.innerHTML = '';
+
+                if (items.length === 0) {
+                    feedContainer.innerHTML = 'No posts found.';
+                    return;
+                }
 
                 for (let i = 0; i < Math.min(items.length, 10); i++) {
                     const title = items[i].getElementsByTagName('title')[0].textContent;
@@ -58,7 +62,7 @@
                 }
             } catch (error) {
                 document.getElementById('feed').innerHTML = 'Failed to load feed.';
-                console.error('Error fetching feed:', error);
+                console.error('Error:', error);
             }
         }
 
