@@ -36,9 +36,10 @@
     <script>
         async function fetchXFeed() {
             const rssUrl = 'https://rsshub.app/twitter/user/SenseFutureUK';
+            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(rssUrl);
             const feedContainer = document.getElementById('feed');
             try {
-                const response = await fetch(rssUrl);
+                const response = await fetch(proxyUrl);
                 if (!response.ok) throw new Error('Network response not OK');
                 const text = await response.text();
                 const parser = new DOMParser();
