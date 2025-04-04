@@ -47,8 +47,8 @@
                 const tweets = doc.querySelectorAll('article[data-testid="tweet"]');
                 feedContainer.innerHTML = '';
 
-                if (tweets.length === 0) {
-                    feedContainer.innerHTML = 'No posts detected.';
+                if (tweets.length === 0 || html.includes('login')) {
+                    feedContainer.innerHTML = '<p>Posts unavailable due to X restrictions. Visit <a href="https://x.com/SenseFutureUK" target="_blank">@SenseFutureUK</a> directly.</p>';
                     return;
                 }
 
