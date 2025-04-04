@@ -35,32 +35,32 @@
 
     <script>
         async function fetchXFeed() {
-            const url = 'https://x.com/SenseFutureUK';
-            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+            const feedUrl = 'https://nitter.net/SenseFutureUK/rss';
+            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(feedUrl);
             const feedContainer = document.getElementById('feed');
             try {
                 const response = await fetch(proxyUrl);
                 if (!response.ok) throw new Error('Network response not OK');
-                const html = await response.text();
+                const text = await response.text();
                 const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const tweets = doc.querySelectorAll('article[data-testid="tweet"]');
+                const xmlDoc = parser.parseFromString(text, 'text/xml');
+                const items = xmlDoc.getElementsByTagName('item');
                 feedContainer.innerHTML = '';
 
-                if (tweets.length === 0 || html.includes('login')) {
-                    feedContainer.innerHTML = '<p>Posts unavailable due to X restrictions. Visit <a href="https://x.com/SenseFutureUK" target="_blank">@SenseFutureUK</a> directly.</p>';
+                if (items.length === 0) {
+                    feedContainer.innerHTML = '<p>No posts detected. Check <a href="https://x.com/SenseFutureUK" target="_blank">@SenseFutureUK</a>.</p>';
                     return;
                 }
 
-                tweets.forEach((tweet, index) => {
-                    if (index >= 10) return; // Limit to 10 posts
-                    const text = tweet.querySelector('div[lang]')?.textContent || 'No text';
-                    const link = tweet.querySelector('a[href*="/status/"]')?.href || url;
+                for (let i = 0; i < Math.min(items.length, 10); i++) {
+                    const title = items[i].getElementsByTagName('title')[0].textContent;
+                    const link = items[i].getElementsByTagName('link')[0].textContent;
+                    const description = items[i].getElementsByTagName('description')[0].textContent.replace(/<[^>]+>/g, ''); // Strip HTML
                     const feedItem = document.createElement('div');
                     feedItem.className = 'feed-item';
-                    feedItem.innerHTML = `<a href="${link}" target="_blank">${text}</a>`;
+                    feedItem.innerHTML = `<a href="${link}" target="_blank">${title}</a><br>${description}`;
                     feedContainer.appendChild(feedItem);
-                });
+                }
             } catch (error) {
                 feedContainer.innerHTML = '<p>Failed: ' + error.message + '</p>';
             }
