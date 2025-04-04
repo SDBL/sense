@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>X Feed Test</title>
+    <title>X Feed for SenseFutureUK</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap" rel="stylesheet">
     <style>
         .feed-container {
@@ -11,12 +11,61 @@
             font-family: 'Lato', sans-serif;
             font-weight: 300;
             padding: 20px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .feed-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #c59929;
+            padding-bottom: 10px;
+        }
+        .feed-item a {
+            color: #c59929;
+            text-decoration: none;
+        }
+        .feed-item a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="feed-container" id="feed">
-        <p>This is a test. If you see this, the page is loading!</p>
+        <p>Loading feed...</p>
     </div>
+
+    <script>
+        async function fetchXFeed() {
+            const rssUrl = 'https://rsshub.app/twitter/user/SenseFutureUK';
+            const feedContainer = document.getElementById('feed');
+            try {
+                const response = await fetch(rssUrl);
+                if (!response.ok) throw new Error('Network response not OK');
+                const text = await response.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(text, 'text/xml');
+                const items = xmlDoc.getElementsByTagName('item');
+                feedContainer.innerHTML = '';
+
+                if (items.length === 0) {
+                    feedContainer.innerHTML = 'No posts found.';
+                    return;
+                }
+
+                for (let i = 0; i < Math.min(items.length, 10); i++) {
+                    const title = items[i].getElementsByTagName('title')[0].textContent;
+                    const link = items[i].getElementsByTagName('link')[0].textContent;
+                    const description = items[i].getElementsByTagName('description')[0].textContent;
+
+                    const feedItem = document.createElement('div');
+                    feedItem.className = 'feed-item';
+                    feedItem.innerHTML = `<a href="${link}" target="_blank">${title}</a><br>${description}`;
+                    feedContainer.appendChild(feedItem);
+                }
+            } catch (error) {
+                feedContainer.innerHTML = '<p>Failed: ' + error.message + '</p>';
+            }
+        }
+        fetchXFeed();
+    </script>
 </body>
 </html>
